@@ -5,14 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentScore = 0;
     const currentScoreElem = document.getElementById('current-score');
 
-    // Get the high score from local storage or set it to 0 if not found
     let highScore = localStorage.getItem('2048-highScore') || 0;
     const highScoreElem = document.getElementById('high-score');
     highScoreElem.textContent = highScore;
 
     const gameOverElem = document.getElementById('game-over');
 
-    // Function to update the score
     function updateScore(value) {
         currentScore += value;
         currentScoreElem.textContent = currentScore;
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to restart the game
     function restartGame() {
         currentScore = 0;
         currentScoreElem.textContent = '0';
@@ -31,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeGame();
     }
 
-    // Function to initialize the game
     function initializeGame() {
         board = [...Array(size)].map(e => Array(size).fill(0));
         placeRandom();
@@ -39,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderBoard();
     }
 
-    // Function to render the game board on the UI
     function renderBoard() {
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
@@ -61,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Cleanup animation classes
         setTimeout(() => {
             const cells = document.querySelectorAll('.grid-cell');
             cells.forEach(cell => {
@@ -70,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // Function to place a random tile on the board
     function placeRandom() {
         const available = [];
         for (let i = 0; i < size; i++) {
@@ -89,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to move the tiles based on arrow key input
     function move(direction) {
         let hasChanged = false;
         if (direction === 'ArrowUp' || direction === 'ArrowDown') {
@@ -120,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to transform a line (row or column) based on move direction
     function transform(line, moveTowardsStart) {
         let newLine = line.filter(cell => cell !== 0);
         if (!moveTowardsStart) {
@@ -129,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let i = 0; i < newLine.length - 1; i++) {
             if (newLine[i] === newLine[i + 1]) {
                 newLine[i] *= 2;
-                updateScore(newLine[i]); // Update score when tiles merged
+                updateScore(newLine[i]);
                 newLine.splice(i + 1, 1);
             }
         }
@@ -142,27 +133,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return newLine;
     }
 
-    // Function to check if the game is over
     function checkGameOver() {
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
                 if (board[i][j] === 0) {
-                    return; // There is an empty cell, so game not over
+                    return;
                 }
                 if (j < size - 1 && board[i][j] === board[i][j + 1]) {
-                    return; // There are horizontally adjacent equal cells, so a move is possible
+                    return;
                 }
                 if (i < size - 1 && board[i][j] === board[i + 1][j]) {
-                    return; // There are vertically adjacent equal cells, so a move is possible
+                    return;
                 }
             }
         }
 
-        // If we reach here, no moves are possible
         gameOverElem.style.display = 'flex';
     }
 
-    // Event listeners
     document.addEventListener('keydown', event => {
         if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
             move(event.key);
